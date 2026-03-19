@@ -134,7 +134,7 @@ Compare:
 ## 6) 📊 Benchmark testing results
 
 ### 🔹 KV-Cache Benchmark: Dynamic vs Static
-<img src="testing/charts/cache_dynamic_vs_static.png" width="400"/>
+<img src="testing/charts/cache_dynamic_vs_static.png"/>
 
 ### 🔹 Scheduling Benchmark: Single Request vs Batched
-<img src="testing/charts/phase1_vs_phase2.png" width="400"/>
+<img src="testing/charts/phase1_vs_phase2.png"/>
