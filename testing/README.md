@@ -21,6 +21,19 @@ The script prints:
 - `mps_memory_mb peak`
 - `cache_implementation` and whether it was applied
 
+## Plotting
+
+Generate comparison charts:
+
+```bash
+python testing/plot_results.py
+```
+
+Output files:
+
+- `testing/charts/phase1_vs_phase2.png`
+- `testing/charts/cache_dynamic_vs_static.png`
+
 ## Common examples
 
 Quick sanity run:
