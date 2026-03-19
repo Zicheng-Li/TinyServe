@@ -1,10 +1,11 @@
-# TinyServe: Phase 1
+# TinyServe: Phase 2
 
-This is a minimal Phase 1 implementation of TinyServe:
+This is the Phase 2 implementation of TinyServe:
 
 - FastAPI endpoint for text generation
-- One model instance loaded at startup
-- Naive request handling (each request calls `model.generate`)
+- Requests are enqueued into an `asyncio.Queue`
+- A background scheduler builds dynamic batches and runs one batched inference
+- Each request gets its own response via `asyncio.Future`
 
 ## 1) Environment
 
@@ -26,6 +27,14 @@ Optional input guardrail:
 
 ```bash
 export TINYSERVE_MAX_INPUT_CHARS=12000
+```
+
+Batch scheduler controls:
+
+```bash
+export TINYSERVE_MAX_BATCH_SIZE=4
+export TINYSERVE_MAX_BATCH_WAIT_MS=50
+export TINYSERVE_QUEUE_MAX_SIZE=256
 ```
 
 ## 3) Run server
@@ -60,5 +69,6 @@ curl -X POST http://localhost:8000/v1/generate \
 ## Notes
 
 - First startup will download model weights from Hugging Face and can take time.
-- For consistent Phase 1 latency/throughput baseline, keep `enable_thinking=false`.
+- For consistent latency/throughput baseline, keep `enable_thinking=false`.
 - On Apple Silicon, the service uses `mps` if available.
+- `/health` now includes queue and scheduler status fields.

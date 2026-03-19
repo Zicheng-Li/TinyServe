@@ -7,7 +7,7 @@ from tinyserve.schemas import GenerateRequest, GenerateResponse, HealthResponse
 
 app = FastAPI(
     title="TinyServe",
-    description="Phase 1 naive LLM serving with FastAPI + Transformers",
+    description="Phase 2 queue-based scheduler with dynamic batching",
     version="0.1.0",
 )
 
@@ -16,7 +16,12 @@ runner = ModelRunner.from_env()
 
 @app.on_event("startup")
 async def startup_event() -> None:
-    await runner.load()
+    await runner.start()
+
+
+@app.on_event("shutdown")
+async def shutdown_event() -> None:
+    await runner.shutdown()
 
 
 @app.get("/health", response_model=HealthResponse)

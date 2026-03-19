@@ -27,3 +27,6 @@ class HealthResponse(BaseModel):
     model: str
     device: str | None
     loaded: bool
+    queue_size: int
+    pending_size: int
+    scheduler_running: bool
