@@ -7,7 +7,7 @@ This is the Phase 5 implementation of TinyServe:
 - A background scheduler builds dynamic batches and runs one batched inference
 - Each request gets its own response via `asyncio.Future`
 - SSE streaming endpoint for single-request token streaming
-- KV-cache optimization (dynamic/static/offloaded）
+- KV-cache optimization (dynamic/static)
 ## 1) Environment
 
 ```bash
@@ -41,7 +41,7 @@ export TINYSERVE_QUEUE_MAX_SIZE=256
 KV-cache strategy:
 
 ```bash
-export TINYSERVE_CACHE_IMPLEMENTATION=dynamic   # dynamic | static | offloaded
+export TINYSERVE_CACHE_IMPLEMENTATION=dynamic   # dynamic | static
 ```
 
 ## 3) Run server
@@ -123,10 +123,6 @@ python testing/load_test.py --label cache_dynamic --output-json testing/report_c
 # static
 export TINYSERVE_CACHE_IMPLEMENTATION=static
 python testing/load_test.py --label cache_static --output-json testing/report_cache_static.json
-
-# offloaded
-export TINYSERVE_CACHE_IMPLEMENTATION=offloaded
-python testing/load_test.py --label cache_offloaded --output-json testing/report_cache_offloaded.json
 ```
 
 Compare:

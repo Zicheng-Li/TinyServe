@@ -1,0 +1,547 @@
+{
+  "summary": {
+    "label": "cache_static",
+    "url": "http://localhost:8000/v1/generate",
+    "health_url": "http://localhost:8000/health",
+    "total": 60,
+    "concurrency": 10,
+    "ok": 60,
+    "error": 0,
+    "elapsed_s": 331.033,
+    "req_per_s": 0.181,
+    "tokens_per_s": 15.95,
+    "server_latency_ms_p50": 44518.38,
+    "server_latency_ms_p95": 66239.19,
+    "end_to_end_ms_p50": 44528.43,
+    "end_to_end_ms_p95": 66248.23,
+    "cache_implementation": "static",
+    "cache_implementation_applied": true,
+    "process_rss_mb_start": 264.98,
+    "process_rss_mb_end": 257.89,
+    "process_rss_mb_peak": 506.05,
+    "process_peak_rss_mb_end": 6562.17,
+    "mps_allocated_mb_start": 3875.24,
+    "mps_allocated_mb_end": 3926.86,
+    "mps_allocated_mb_peak": 3933.5,
+    "payload": {
+      "prompt": "Please explain what dynamic batch processing is in three sentences.",
+      "max_new_tokens": 96,
+      "do_sample": false,
+      "temperature": 0.7,
+      "top_p": 0.8,
+      "enable_thinking": false
+    }
+  },
+  "results": [
+    {
+      "ok": true,
+      "wall_ms": 26481.01916700034,
+      "status_code": 200,
+      "latency_ms": 26436.61,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 26481.635000000097,
+      "status_code": 200,
+      "latency_ms": 26436.89,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 26481.06770800041,
+      "status_code": 200,
+      "latency_ms": 26436.36,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 26481.609124999522,
+      "status_code": 200,
+      "latency_ms": 26436.47,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 48389.69295800052,
+      "status_code": 200,
+      "latency_ms": 48356.74,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 48389.37595799871,
+      "status_code": 200,
+      "latency_ms": 48357.11,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 48389.163292000376,
+      "status_code": 200,
+      "latency_ms": 48356.37,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 48390.77295900097,
+      "status_code": 200,
+      "latency_ms": 48356.59,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 69801.20399999942,
+      "status_code": 200,
+      "latency_ms": 69752.38,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43321.76345900007,
+      "status_code": 200,
+      "latency_ms": 43308.42,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 69802.49933300001,
+      "status_code": 200,
+      "latency_ms": 69753.69,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43322.065625001414,
+      "status_code": 200,
+      "latency_ms": 43308.8,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 42916.52866699951,
+      "status_code": 200,
+      "latency_ms": 42906.52,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 64825.99866700002,
+      "status_code": 200,
+      "latency_ms": 64815.04,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 42917.76225000103,
+      "status_code": 200,
+      "latency_ms": 42906.81,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 64826.2178749992,
+      "status_code": 200,
+      "latency_ms": 64814.83,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 64547.23204199945,
+      "status_code": 200,
+      "latency_ms": 64533.24,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43135.933208001006,
+      "status_code": 200,
+      "latency_ms": 43121.79,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 64548.666333001165,
+      "status_code": 200,
+      "latency_ms": 64533.39,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43136.084999998275,
+      "status_code": 200,
+      "latency_ms": 43121.4,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43306.306292000954,
+      "status_code": 200,
+      "latency_ms": 43297.13,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43306.704667000304,
+      "status_code": 200,
+      "latency_ms": 43297.47,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 64812.05662499997,
+      "status_code": 200,
+      "latency_ms": 64801.39,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 64811.1904590005,
+      "status_code": 200,
+      "latency_ms": 64801.06,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43673.77437499999,
+      "status_code": 200,
+      "latency_ms": 43663.73,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 65305.86416699953,
+      "status_code": 200,
+      "latency_ms": 65294.73,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 65305.55516700042,
+      "status_code": 200,
+      "latency_ms": 65294.58,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43675.27599999994,
+      "status_code": 200,
+      "latency_ms": 43663.24,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43547.44862500047,
+      "status_code": 200,
+      "latency_ms": 43536.42,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 65223.85329200006,
+      "status_code": 200,
+      "latency_ms": 65210.64,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 65223.78708399992,
+      "status_code": 200,
+      "latency_ms": 65210.43,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43548.94395800147,
+      "status_code": 200,
+      "latency_ms": 43536.76,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43269.64595800018,
+      "status_code": 200,
+      "latency_ms": 43260.37,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 65268.85237500028,
+      "status_code": 200,
+      "latency_ms": 65259.2,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43269.77391699984,
+      "status_code": 200,
+      "latency_ms": 43260.65,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 65268.97320799981,
+      "status_code": 200,
+      "latency_ms": 65259.03,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43594.85641699939,
+      "status_code": 200,
+      "latency_ms": 43583.59,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43595.66262500084,
+      "status_code": 200,
+      "latency_ms": 43583.2,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 65144.95929199984,
+      "status_code": 200,
+      "latency_ms": 65132.71,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 65146.05879100054,
+      "status_code": 200,
+      "latency_ms": 65132.86,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 64978.362916999686,
+      "status_code": 200,
+      "latency_ms": 64966.24,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43259.09208399935,
+      "status_code": 200,
+      "latency_ms": 43247.53,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 64980.050042000585,
+      "status_code": 200,
+      "latency_ms": 64966.62,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43259.49037499959,
+      "status_code": 200,
+      "latency_ms": 43247.73,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 64898.992624999664,
+      "status_code": 200,
+      "latency_ms": 64889.79,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43024.58258399929,
+      "status_code": 200,
+      "latency_ms": 43013.9,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 64899.842415999956,
+      "status_code": 200,
+      "latency_ms": 64889.95,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43024.97674999904,
+      "status_code": 200,
+      "latency_ms": 43013.53,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43361.142833000486,
+      "status_code": 200,
+      "latency_ms": 43352.23,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 43362.18895800084,
+      "status_code": 200,
+      "latency_ms": 43352.57,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 64745.07841599916,
+      "status_code": 200,
+      "latency_ms": 64735.7,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 64745.43508300121,
+      "status_code": 200,
+      "latency_ms": 64735.88,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 44074.16945799923,
+      "status_code": 200,
+      "latency_ms": 44062.3,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 65714.17633400051,
+      "status_code": 200,
+      "latency_ms": 65701.02,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 44074.215583001205,
+      "status_code": 200,
+      "latency_ms": 44061.96,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 65714.74079200016,
+      "status_code": 200,
+      "latency_ms": 65701.2,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 44527.4792909986,
+      "status_code": 200,
+      "latency_ms": 44518.25,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 66248.38108299991,
+      "status_code": 200,
+      "latency_ms": 66239.32,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 44528.427209001165,
+      "status_code": 200,
+      "latency_ms": 44518.38,
+      "total_tokens": 88,
+      "error": null
+    },
+    {
+      "ok": true,
+      "wall_ms": 66248.22695900002,
+      "status_code": 200,
+      "latency_ms": 66239.19,
+      "total_tokens": 88,
+      "error": null
+    }
+  ],
+  "health_start": {
+    "status": "ok",
+    "model": "Qwen/Qwen3-1.7B",
+    "device": "mps",
+    "loaded": true,
+    "cache_implementation": "static",
+    "cache_implementation_applied": true,
+    "queue_size": 0,
+    "pending_size": 0,
+    "scheduler_running": true,
+    "pid": 19504,
+    "process_rss_mb": 264.98,
+    "process_peak_rss_mb": 6562.17,
+    "mps_allocated_mb": 3875.24
+  },
+  "health_end": {
+    "status": "ok",
+    "model": "Qwen/Qwen3-1.7B",
+    "device": "mps",
+    "loaded": true,
+    "cache_implementation": "static",
+    "cache_implementation_applied": true,
+    "queue_size": 0,
+    "pending_size": 0,
+    "scheduler_running": true,
+    "pid": 19504,
+    "process_rss_mb": 257.89,
+    "process_peak_rss_mb": 6562.17,
+    "mps_allocated_mb": 3926.86
+  }
+}

@@ -51,9 +51,6 @@ Use the same prompt/load settings for fair comparison.
 2. `static`:
    - Restart server with `export TINYSERVE_CACHE_IMPLEMENTATION=static`
    - Run `python testing/load_test.py --label cache_static --output-json testing/report_cache_static.json`
-3. `offloaded`:
-   - Restart server with `export TINYSERVE_CACHE_IMPLEMENTATION=offloaded`
-   - Run `python testing/load_test.py --label cache_offloaded --output-json testing/report_cache_offloaded.json`
 
 Focus on:
 

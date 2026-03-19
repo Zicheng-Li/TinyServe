@@ -18,11 +18,11 @@ class Settings:
         cache_implementation = (
             os.getenv("TINYSERVE_CACHE_IMPLEMENTATION", "dynamic").strip().lower()
         )
-        supported_cache_impls = {"dynamic", "static", "offloaded"}
+        supported_cache_impls = {"dynamic", "static"}
         if cache_implementation not in supported_cache_impls:
             raise ValueError(
                 "TINYSERVE_CACHE_IMPLEMENTATION must be one of: "
-                "dynamic, static, offloaded"
+                "dynamic, static"
             )
 
         return Settings(
