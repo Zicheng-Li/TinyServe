@@ -72,3 +72,13 @@ curl -X POST http://localhost:8000/v1/generate \
 - For consistent latency/throughput baseline, keep `enable_thinking=false`.
 - On Apple Silicon, the service uses `mps` if available.
 - `/health` now includes queue and scheduler status fields.
+
+## 5) Load testing
+
+```bash
+python testing/load_test.py --total 60 --concurrency 10 --label phase2_batching
+```
+
+More examples:
+
+- `testing/README.md`

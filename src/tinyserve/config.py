@@ -17,7 +17,7 @@ class Settings:
         return Settings(
             model_id=os.getenv("TINYSERVE_MODEL_ID", "Qwen/Qwen3-1.7B"),
             max_input_chars=int(os.getenv("TINYSERVE_MAX_INPUT_CHARS", "12000")),
-            max_batch_size=int(os.getenv("TINYSERVE_MAX_BATCH_SIZE", "4")),
-            max_batch_wait_ms=int(os.getenv("TINYSERVE_MAX_BATCH_WAIT_MS", "50")),
+            max_batch_size=int(os.getenv("TINYSERVE_MAX_BATCH_SIZE", "1")),
+            max_batch_wait_ms=int(os.getenv("TINYSERVE_MAX_BATCH_WAIT_MS", "0")),
             queue_max_size=int(os.getenv("TINYSERVE_QUEUE_MAX_SIZE", "256")),
         )
