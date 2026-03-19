@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import json
+import threading
 import time
 import uuid
+from collections.abc import AsyncIterator
 from dataclasses import dataclass
 from typing import Any
 
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, TextIteratorStreamer
 
 from tinyserve.config import Settings
 from tinyserve.schemas import GenerateRequest, GenerateResponse, HealthResponse
@@ -48,6 +51,7 @@ class ModelRunner:
         )
         self._pending: list[_QueuedRequest] = []
         self._scheduler_task: asyncio.Task[None] | None = None
+        self._inference_lock = asyncio.Lock()
         self._accepting = True
 
     @classmethod
@@ -123,6 +127,85 @@ class ModelRunner:
         await self.request_queue.put(queued_request)
         return await response_future
 
+    async def stream_generate_sse(self, request: GenerateRequest) -> AsyncIterator[str]:
+        if len(request.prompt) > self.settings.max_input_chars:
+            raise RuntimeError(
+                f"prompt too long: {len(request.prompt)} chars > "
+                f"{self.settings.max_input_chars} chars"
+            )
+        if not self._accepting:
+            raise RuntimeError("server is shutting down")
+
+        await self.start()
+        assert self.state.tokenizer is not None
+        assert self.state.device is not None
+
+        request_id = uuid.uuid4().hex
+        started_at = time.perf_counter()
+        tokenizer = self.state.tokenizer
+        completion_text_parts: list[str] = []
+        error_holder: dict[str, str] = {}
+
+        yield self._sse(
+            {
+                "type": "start",
+                "request_id": request_id,
+                "model": self.settings.model_id,
+                "device": self.state.device,
+            }
+        )
+
+        async with self._inference_lock:
+            streamer = TextIteratorStreamer(
+                tokenizer=tokenizer, skip_prompt=True, skip_special_tokens=True
+            )
+            worker = threading.Thread(
+                target=self._stream_generate_worker,
+                args=(request, streamer, error_holder),
+                daemon=True,
+            )
+            worker.start()
+
+            while True:
+                chunk = await asyncio.to_thread(next, streamer, None)
+                if chunk is None:
+                    break
+                if not chunk:
+                    continue
+                completion_text_parts.append(chunk)
+                yield self._sse(
+                    {"type": "token", "request_id": request_id, "text": chunk}
+                )
+
+            await asyncio.to_thread(worker.join)
+
+        if "error" in error_holder:
+            raise RuntimeError(error_holder["error"])
+
+        prompt_text = tokenizer.apply_chat_template(
+            [{"role": "user", "content": request.prompt}],
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=request.enable_thinking,
+        )
+        prompt_tokens = len(tokenizer(prompt_text, add_special_tokens=False)["input_ids"])
+        completion_text = "".join(completion_text_parts).strip()
+        completion_tokens = len(
+            tokenizer(completion_text, add_special_tokens=False)["input_ids"]
+        )
+        latency_ms = round((time.perf_counter() - started_at) * 1000.0, 2)
+
+        yield self._sse(
+            {
+                "type": "done",
+                "request_id": request_id,
+                "latency_ms": latency_ms,
+                "prompt_tokens": prompt_tokens,
+                "completion_tokens": completion_tokens,
+                "total_tokens": prompt_tokens + completion_tokens,
+            }
+        )
+
     async def _scheduler_loop(self) -> None:
         while True:
             batch = await self._collect_batch()
@@ -130,7 +213,8 @@ class ModelRunner:
                 continue
 
             try:
-                responses = await asyncio.to_thread(self._infer_batch_blocking, batch)
+                async with self._inference_lock:
+                    responses = await asyncio.to_thread(self._infer_batch_blocking, batch)
             except Exception as exc:
                 for req in batch:
                     if not req.future.done():
@@ -264,6 +348,56 @@ class ModelRunner:
 
         return responses
 
+    def _stream_generate_worker(
+        self,
+        request: GenerateRequest,
+        streamer: TextIteratorStreamer,
+        error_holder: dict[str, str],
+    ) -> None:
+        try:
+            self._generate_with_streamer_blocking(request, streamer)
+        except Exception as exc:
+            error_holder["error"] = str(exc)
+            streamer.end()
+
+    def _generate_with_streamer_blocking(
+        self, request: GenerateRequest, streamer: TextIteratorStreamer
+    ) -> None:
+        assert self.state.model is not None
+        assert self.state.tokenizer is not None
+        assert self.state.device is not None
+
+        tokenizer = self.state.tokenizer
+        model = self.state.model
+        device = self.state.device
+
+        prompt_text = tokenizer.apply_chat_template(
+            [{"role": "user", "content": request.prompt}],
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=request.enable_thinking,
+        )
+        model_inputs = tokenizer([prompt_text], return_tensors="pt")
+        model_inputs = {k: v.to(device) for k, v in model_inputs.items()}
+        pad_token_id = (
+            tokenizer.pad_token_id
+            if tokenizer.pad_token_id is not None
+            else tokenizer.eos_token_id
+        )
+        generation_kwargs: dict[str, Any] = {
+            "max_new_tokens": request.max_new_tokens,
+            "do_sample": request.do_sample,
+            "pad_token_id": pad_token_id,
+            "eos_token_id": tokenizer.eos_token_id,
+            "streamer": streamer,
+        }
+        if request.do_sample:
+            generation_kwargs["temperature"] = request.temperature
+            generation_kwargs["top_p"] = request.top_p
+
+        with torch.inference_mode():
+            model.generate(**model_inputs, **generation_kwargs)
+
     def health(self) -> HealthResponse:
         return HealthResponse(
             status="ok",
@@ -275,6 +409,10 @@ class ModelRunner:
             scheduler_running=self._scheduler_task is not None
             and not self._scheduler_task.done(),
         )
+
+    @staticmethod
+    def _sse(payload: dict[str, Any]) -> str:
+        return f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
 
     @staticmethod
     def _pick_device() -> tuple[str, torch.dtype]:

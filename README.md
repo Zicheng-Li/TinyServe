@@ -1,11 +1,12 @@
-# TinyServe: Phase 2
+# TinyServe: Phase 4
 
-This is the Phase 2 implementation of TinyServe:
+This is the Phase 4 implementation of TinyServe:
 
 - FastAPI endpoint for text generation
 - Requests are enqueued into an `asyncio.Queue`
 - A background scheduler builds dynamic batches and runs one batched inference
 - Each request gets its own response via `asyncio.Future`
+- SSE streaming endpoint for single-request token streaming
 
 ## 1) Environment
 
@@ -66,12 +67,32 @@ curl -X POST http://localhost:8000/v1/generate \
   }'
 ```
 
+Streaming generation (SSE):
+
+```bash
+curl -N -X POST http://localhost:8000/v1/generate/stream \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "Explain dynamic batching with a short analogy.",
+    "max_new_tokens": 96,
+    "do_sample": false,
+    "enable_thinking": false
+  }'
+```
+
+Lightweight browser demo:
+
+- Open `http://localhost:8000/`
+- Click `Start Streaming`
+- You should see token text appear incrementally
+
 ## Notes
 
 - First startup will download model weights from Hugging Face and can take time.
 - For consistent latency/throughput baseline, keep `enable_thinking=false`.
 - On Apple Silicon, the service uses `mps` if available.
 - `/health` now includes queue and scheduler status fields.
+- Streaming route is implemented as a simple single-request mode on the shared model lock.
 
 ## 5) Load testing
 
