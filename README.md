@@ -1,13 +1,13 @@
-# TinyServe: Phase 4
+# TinyServe: Phase 5
 
-This is the Phase 4 implementation of TinyServe:
+This is the Phase 5 implementation of TinyServe:
 
 - FastAPI endpoint for text generation
 - Requests are enqueued into an `asyncio.Queue`
 - A background scheduler builds dynamic batches and runs one batched inference
 - Each request gets its own response via `asyncio.Future`
 - SSE streaming endpoint for single-request token streaming
-
+- KV-cache optimization (dynamic/static/offloaded）
 ## 1) Environment
 
 ```bash
