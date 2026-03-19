@@ -89,20 +89,32 @@ Focus on:
 ## Result:
 `python testing/load_test.py --total 60 --concurrency 10 --label phase2_batching`
 
-label=phase2_batching
-ok=60 error=0 total=60 concurrency=10
-elapsed_s=266.839
-req_per_s=0.225
-tokens_per_s=19.787
-server_latency_ms p50=37936.31 p95=55087.38
-end_to_end_ms p50=37947.41 p95=55096.64
+- label=phase2_batching
+- ok=60 
+- error=0 
+- total=60 
+- concurrency=10
+- elapsed_s=266.839
+- req_per_s=0.225
+- tokens_per_s=19.787
+- server_latency_ms 
+   - p50=37936.31 p95=55087.38
+- end_to_end_ms 
+   - p50=37947.41 p95=55096.64
 
 `python testing/load_test.py --total 60 --concurrency 10 --label phase1_like`
 
-label=phase1_like
-ok=60 error=0 total=60 concurrency=10
-elapsed_s=308.434
-req_per_s=0.195
-tokens_per_s=17.119
-server_latency_ms p50=50815.63 p95=52029.83
-end_to_end_ms p50=50818.68 p95=52032.57
+- label=phase1_like
+- ok=60 
+- error=0 
+- total=60 
+- concurrency=10
+- elapsed_s=308.434
+- req_per_s=0.195
+- tokens_per_s=17.119
+- server_latency_ms 
+   - p50=50815.63 
+   - p95=52029.83
+- end_to_end_ms 
+   - p50=50818.68 
+   - p95=52032.57

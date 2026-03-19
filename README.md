@@ -130,3 +130,11 @@ Compare:
 - `tokens_per_s` (throughput)
 - `server_latency_ms_p95` (tail latency)
 - `process_rss_mb_peak` and `mps_allocated_mb_peak` (memory)
+
+## 6) 📊 Benchmark testing results
+
+### 🔹 KV-Cache Benchmark: Dynamic vs Static
+<img src="testing/charts/cache_dynamic_vs_static.png" width="400"/>
+
+### 🔹 Scheduling Benchmark: Single Request vs Batched
+<img src="testing/charts/phase1_vs_phase2.png" width="400"/>
