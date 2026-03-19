@@ -3,6 +3,10 @@ from __future__ import annotations
 import asyncio
 import contextlib
 import json
+import os
+import resource
+import subprocess
+import sys
 import threading
 import time
 import uuid
@@ -53,6 +57,8 @@ class ModelRunner:
         self._scheduler_task: asyncio.Task[None] | None = None
         self._inference_lock = asyncio.Lock()
         self._accepting = True
+        self._cache_implementation_applied = True
+        self._cache_implementation_supported: bool | None = None
 
     @classmethod
     def from_env(cls) -> "ModelRunner":
@@ -313,13 +319,16 @@ class ModelRunner:
             "do_sample": first.do_sample,
             "pad_token_id": pad_token_id,
             "eos_token_id": tokenizer.eos_token_id,
+            "cache_implementation": self.settings.cache_implementation,
         }
         if first.do_sample:
             generation_kwargs["temperature"] = first.temperature
             generation_kwargs["top_p"] = first.top_p
 
         with torch.inference_mode():
-            outputs = model.generate(**model_inputs, **generation_kwargs)
+            outputs = self._run_generate_with_cache_fallback(
+                model, model_inputs, generation_kwargs
+            )
 
         attention_mask = model_inputs["attention_mask"]
         responses: list[GenerateResponse] = []
@@ -390,13 +399,14 @@ class ModelRunner:
             "pad_token_id": pad_token_id,
             "eos_token_id": tokenizer.eos_token_id,
             "streamer": streamer,
+            "cache_implementation": self.settings.cache_implementation,
         }
         if request.do_sample:
             generation_kwargs["temperature"] = request.temperature
             generation_kwargs["top_p"] = request.top_p
 
         with torch.inference_mode():
-            model.generate(**model_inputs, **generation_kwargs)
+            self._run_generate_with_cache_fallback(model, model_inputs, generation_kwargs)
 
     def health(self) -> HealthResponse:
         return HealthResponse(
@@ -404,11 +414,79 @@ class ModelRunner:
             model=self.settings.model_id,
             device=self.state.device,
             loaded=self.state.loaded,
+            cache_implementation=self.settings.cache_implementation,
+            cache_implementation_applied=self._cache_implementation_applied,
             queue_size=self.request_queue.qsize(),
             pending_size=len(self._pending),
             scheduler_running=self._scheduler_task is not None
             and not self._scheduler_task.done(),
+            pid=os.getpid(),
+            process_rss_mb=self._get_process_rss_mb(),
+            process_peak_rss_mb=self._get_process_peak_rss_mb(),
+            mps_allocated_mb=self._get_mps_allocated_mb(),
         )
+
+    def _run_generate_with_cache_fallback(
+        self,
+        model: Any,
+        model_inputs: dict[str, Any],
+        generation_kwargs: dict[str, Any],
+    ) -> Any:
+        effective_kwargs = dict(generation_kwargs)
+        if self._cache_implementation_supported is False:
+            effective_kwargs.pop("cache_implementation", None)
+
+        try:
+            self._cache_implementation_applied = (
+                "cache_implementation" in effective_kwargs
+            )
+            return model.generate(**model_inputs, **effective_kwargs)
+        except TypeError as exc:
+            # Older transformers versions may not accept cache_implementation.
+            if "cache_implementation" in effective_kwargs and (
+                "cache_implementation" in str(exc)
+                or "unexpected keyword argument" in str(exc)
+            ):
+                retry_kwargs = dict(effective_kwargs)
+                retry_kwargs.pop("cache_implementation", None)
+                self._cache_implementation_applied = False
+                self._cache_implementation_supported = False
+                return model.generate(**model_inputs, **retry_kwargs)
+            raise
+        finally:
+            if self._cache_implementation_applied:
+                self._cache_implementation_supported = True
+
+    @staticmethod
+    def _get_process_rss_mb() -> float | None:
+        try:
+            output = subprocess.check_output(
+                ["ps", "-o", "rss=", "-p", str(os.getpid())], text=True
+            )
+            rss_kb = int(output.strip())
+            return round(rss_kb / 1024.0, 2)
+        except Exception:
+            return None
+
+    @staticmethod
+    def _get_process_peak_rss_mb() -> float | None:
+        try:
+            peak_raw = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+            if sys.platform == "darwin":
+                return round(peak_raw / (1024.0 * 1024.0), 2)
+            return round(peak_raw / 1024.0, 2)
+        except Exception:
+            return None
+
+    @staticmethod
+    def _get_mps_allocated_mb() -> float | None:
+        try:
+            if not torch.backends.mps.is_available():
+                return None
+            current_allocated = torch.mps.current_allocated_memory()
+            return round(current_allocated / (1024.0 * 1024.0), 2)
+        except Exception:
+            return None
 
     @staticmethod
     def _sse(payload: dict[str, Any]) -> str:

@@ -1,6 +1,6 @@
 # Testing
 
-Load testing script for TinyServe Phase 2.
+Load testing script for TinyServe.
 
 ## Quick start
 
@@ -10,25 +10,56 @@ Run with default settings (60 requests, concurrency 10):
 python testing/load_test.py
 ```
 
+## Output metrics
+
+The script prints:
+
+- `req_per_s`
+- `tokens_per_s`
+- `server_latency_ms p95`
+- `memory_mb rss_peak`
+- `mps_memory_mb peak`
+- `cache_implementation` and whether it was applied
+
 ## Common examples
 
-Baseline-like run (no effective batching from server side):
+Quick sanity run:
 
 ```bash
-python testing/load_test.py --label phase1_like --total 60 --concurrency 10 --max-new-tokens 96
+python testing/load_test.py --total 20 --concurrency 5 --max-new-tokens 64 --label quick
 ```
 
-Heavier run:
+Save full report:
 
 ```bash
-python testing/load_test.py --label phase2_120x10 --total 120 --concurrency 10 --max-new-tokens 128
+python testing/load_test.py --label dynamic --output-json testing/report_dynamic.json
 ```
 
-Write full report to JSON:
+Disable memory sampling:
 
 ```bash
-python testing/load_test.py --output-json testing/report_phase2.json
+python testing/load_test.py --no-sample-memory
 ```
+
+## Compare KV-cache implementations
+
+Use the same prompt/load settings for fair comparison.
+
+1. `dynamic`:
+   - Restart server with `export TINYSERVE_CACHE_IMPLEMENTATION=dynamic`
+   - Run `python testing/load_test.py --label cache_dynamic --output-json testing/report_cache_dynamic.json`
+2. `static`:
+   - Restart server with `export TINYSERVE_CACHE_IMPLEMENTATION=static`
+   - Run `python testing/load_test.py --label cache_static --output-json testing/report_cache_static.json`
+3. `offloaded`:
+   - Restart server with `export TINYSERVE_CACHE_IMPLEMENTATION=offloaded`
+   - Run `python testing/load_test.py --label cache_offloaded --output-json testing/report_cache_offloaded.json`
+
+Focus on:
+
+- throughput: `tokens_per_s`
+- tail latency: `server_latency_ms_p95`
+- memory: `process_rss_mb_peak` and `mps_allocated_mb_peak`
 
 ## How to compare Phase 1 vs Phase 2 behavior
 

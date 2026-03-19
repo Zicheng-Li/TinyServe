@@ -27,6 +27,12 @@ class HealthResponse(BaseModel):
     model: str
     device: str | None
     loaded: bool
+    cache_implementation: str
+    cache_implementation_applied: bool
     queue_size: int
     pending_size: int
     scheduler_running: bool
+    pid: int
+    process_rss_mb: float | None
+    process_peak_rss_mb: float | None
+    mps_allocated_mb: float | None

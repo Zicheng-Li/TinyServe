@@ -38,6 +38,12 @@ export TINYSERVE_MAX_BATCH_WAIT_MS=50
 export TINYSERVE_QUEUE_MAX_SIZE=256
 ```
 
+KV-cache strategy:
+
+```bash
+export TINYSERVE_CACHE_IMPLEMENTATION=dynamic   # dynamic | static | offloaded
+```
+
 ## 3) Run server
 
 ```bash
@@ -92,6 +98,7 @@ Lightweight browser demo:
 - For consistent latency/throughput baseline, keep `enable_thinking=false`.
 - On Apple Silicon, the service uses `mps` if available.
 - `/health` now includes queue and scheduler status fields.
+- `/health` also includes cache strategy and process memory snapshots.
 - Streaming route is implemented as a simple single-request mode on the shared model lock.
 
 ## 5) Load testing
@@ -103,3 +110,27 @@ python testing/load_test.py --total 60 --concurrency 10 --label phase2_batching
 More examples:
 
 - `testing/README.md`
+
+## 6) KV-cache optimization benchmark
+
+Use the same load profile for all modes, restart server between runs:
+
+```bash
+# dynamic
+export TINYSERVE_CACHE_IMPLEMENTATION=dynamic
+python testing/load_test.py --label cache_dynamic --output-json testing/report_cache_dynamic.json
+
+# static
+export TINYSERVE_CACHE_IMPLEMENTATION=static
+python testing/load_test.py --label cache_static --output-json testing/report_cache_static.json
+
+# offloaded
+export TINYSERVE_CACHE_IMPLEMENTATION=offloaded
+python testing/load_test.py --label cache_offloaded --output-json testing/report_cache_offloaded.json
+```
+
+Compare:
+
+- `tokens_per_s` (throughput)
+- `server_latency_ms_p95` (tail latency)
+- `process_rss_mb_peak` and `mps_allocated_mb_peak` (memory)
