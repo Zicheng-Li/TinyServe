@@ -1,27 +1,30 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException
 
 from tinyserve.model_runner import ModelRunner
 from tinyserve.schemas import GenerateRequest, GenerateResponse, HealthResponse
 
+runner = ModelRunner.from_env()
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    await runner.start()
+    try:
+        yield
+    finally:
+        await runner.shutdown()
+
+
 app = FastAPI(
     title="TinyServe",
     description="Phase 2 queue-based scheduler with dynamic batching",
     version="0.1.0",
+    lifespan=lifespan,
 )
-
-runner = ModelRunner.from_env()
-
-
-@app.on_event("startup")
-async def startup_event() -> None:
-    await runner.start()
-
-
-@app.on_event("shutdown")
-async def shutdown_event() -> None:
-    await runner.shutdown()
 
 
 @app.get("/health", response_model=HealthResponse)
