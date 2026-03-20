@@ -1,6 +1,6 @@
-# TinyServe: Phase 5
+# TinyServe: Final Phase 
 
-This is the Phase 5 implementation of TinyServe:
+This is the Final Phase implementation of TinyServe:
 
 - FastAPI endpoint for text generation
 - Requests are enqueued into an `asyncio.Queue`
@@ -8,7 +8,24 @@ This is the Phase 5 implementation of TinyServe:
 - Each request gets its own response via `asyncio.Future`
 - SSE streaming endpoint for single-request token streaming
 - KV-cache optimization (dynamic/static)
-## 1) Environment
+
+## 1) Streaming Inference Demo
+
+TinyServe supports real-time token streaming via Server-Sent Events (SSE)
+
+<p align="center">
+  <img src="testing/charts/sse.gif"/>
+</p>
+
+## 2) 📊 Benchmark testing results
+
+### 🔹 KV-Cache Benchmark: Dynamic vs Static
+<img src="testing/charts/cache_dynamic_vs_static.png"/>
+
+### 🔹 Scheduling Benchmark: Single Request vs Batched
+<img src="testing/charts/phase1_vs_phase2.png"/>
+
+## 3) Environment
 
 ```bash
 python3 -m venv .venv
@@ -16,7 +33,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-## 2) Choose model
+## 4) Choose model
 
 Default model:
 
@@ -44,13 +61,13 @@ KV-cache strategy:
 export TINYSERVE_CACHE_IMPLEMENTATION=dynamic   # dynamic | static
 ```
 
-## 3) Run server
+## 5) Run server
 
 ```bash
 uvicorn tinyserve.main:app --host 0.0.0.0 --port 8000 --app-dir src
 ```
 
-## 4) Test
+## 6) Test
 
 Health check:
 
@@ -101,7 +118,7 @@ Lightweight browser demo:
 - `/health` also includes cache strategy and process memory snapshots.
 - Streaming route is implemented as a simple single-request mode on the shared model lock.
 
-## 5) Load testing
+## 7) Load testing
 
 ```bash
 python testing/load_test.py --total 60 --concurrency 10 --label phase2_batching
@@ -111,7 +128,7 @@ More examples:
 
 - `testing/README.md`
 
-## 6) KV-cache optimization benchmark
+## 8) KV-cache optimization benchmark
 
 Use the same load profile for all modes, restart server between runs:
 
@@ -130,11 +147,3 @@ Compare:
 - `tokens_per_s` (throughput)
 - `server_latency_ms_p95` (tail latency)
 - `process_rss_mb_peak` and `mps_allocated_mb_peak` (memory)
-
-## 6) 📊 Benchmark testing results
-
-### 🔹 KV-Cache Benchmark: Dynamic vs Static
-<img src="testing/charts/cache_dynamic_vs_static.png"/>
-
-### 🔹 Scheduling Benchmark: Single Request vs Batched
-<img src="testing/charts/phase1_vs_phase2.png"/>
